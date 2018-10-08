@@ -3,9 +3,9 @@ namespace Megaads\Generatepagefeeds;
 
 use Illuminate\Support\ServiceProvider;
 
-class GeneratepagefeedServiceProvider extends ServiceProvider
+class GeneratepagefeedsServiceProvider extends ServiceProvider
 {
-    public function boot() 
+    public function boot()
     {
         if (!$this->app->routesAreCached()) {
             include __DIR__ . '/routes.php';
@@ -13,9 +13,9 @@ class GeneratepagefeedServiceProvider extends ServiceProvider
         $this->publishConfig();
     }
 
-    public function register() 
+    public function register()
     {
-        
+
     }
 
     private function publishConfig()

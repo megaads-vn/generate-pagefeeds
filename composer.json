@@ -1,10 +1,10 @@
 {
     "name": "megaads/generate-pagefeeds",
-    "description": "",
+    "description": "This package atuo generate pagefeeds and submit to google",
     "license": "MIT",
     "authors": [
         {
-            "name": "MegaAds Inc",
+            "name": "Megaads",
             "email": "info@megaads.vn"
         }
     ],
@@ -20,5 +20,4 @@
             "Megaads\\Generatepagefeeds\\": "src/"
         }
     }
-    
 }
