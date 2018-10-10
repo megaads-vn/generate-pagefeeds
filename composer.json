@@ -20,5 +20,11 @@
         "psr-4": {
             "Megaads\\Generatepagefeeds\\": "src/"
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "composer update",
+        ]
     }
 }
