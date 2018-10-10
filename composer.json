@@ -24,7 +24,7 @@
     "scripts": {
         "post-install-cmd": [
             "Illuminate\\Foundation\\ComposerScripts::postInstall",
-            "composer update",
+            "composer update"
         ]
     }
 }
