@@ -1,28 +1,18 @@
-<?php 
-namespace Megaads\Generatepagefeeds;
-
-use Illuminate\Support\ServiceProvider;
-
-class GeneratepagefeedsServiceProvider extends ServiceProvider
-{
-    public function boot()
-    {
-
+<?php
+if (config('generate-sitemap.multiplesitemap')) {
+    $avaiablelocales = config('app.locales');
+    $locale = Request::segment(1);
+    if (!array_key_exists($locale, $avaiablelocales)) {
+        $locale = '';
     }
-
-    public function register()
-    {
-
-    }
-
-    private function publishConfig()
-    {
-        $path = $this->getConfigPath();
-        $this->publishes([$path => config_path('pagefeeds.php')], 'config');
-    }
-
-    private function getConfigPath()
-    {
-        return __DIR__.'/../config/pagefeeds.php';
-    }
+} else {
+    $locale = '';
 }
+
+Route::group(['prefix' => $locale, 'namespace' => '\Megaads\Generatepagefeeds\Controllers'], function() {
+    Route::get('/pagefeeds-generator-multiple', 'PageFeedsControllers@pageFeedsAll');
+});
+
+Route::group(['namespace' => '\Megaads\Generatepagefeeds\Controllers'], function() {
+    Route::get('/pagefeeds-generator', 'PageFeedsControllers@generate');
+});
