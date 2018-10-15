@@ -95,7 +95,7 @@ class PageFeedsControllers extends Controller
     {
         try {
             $query = $this->buildFilter($request);
-            $tableItems = $query->get($columns);
+            $tableItems = $query->select(\DB::raw('slug, status, concat(concat(title," "),`auto_text`) as "title"'))->get();
             $results = [
                 [
                     'Page URL',
@@ -105,9 +105,11 @@ class PageFeedsControllers extends Controller
             if ( !empty($tableItems) ) {
                 foreach($tableItems as $item) {
                     $dataItem = array();
-                    $dataItem[] = route($this->storeRouteName, ['slug' => $item->slug]);
-                    $dataItem[] = $item->title;
-                    array_push($results, $dataItem);
+                    if ( $item->status == 'enable' ) {
+                        $dataItem[] = route($this->storeRouteName, ['slug' => $item->slug]);
+                        $dataItem[] = $item->title;
+                        array_push($results, $dataItem);
+                    }
                 }
             }
             return $results;
