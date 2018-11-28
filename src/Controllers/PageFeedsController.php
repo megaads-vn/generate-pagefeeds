@@ -98,9 +98,10 @@ class PageFeedsControllers extends Controller
     private function getFeedData($columns, Request $request)
     {
         $rawStringQuery = 'slug, status, ';
+        $isChangeTitlePos = env('PAGEFEEDS_TITLE', false);
         try {
             $query = $this->buildFilter($request);
-            if ( $request->has('change_pos') && $request->get('change_pos') == 'change') {
+            if ( $isChangeTitlePos ) {
                 $addAlias = 'concat(`auto_text`, concat(" ", `title`)) as "title"';
             } else {
                 $addAlias = 'concat(concat(`title`," "),`auto_text`) as "title"';
