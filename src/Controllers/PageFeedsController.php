@@ -29,7 +29,7 @@ class PageFeedsControllers extends Controller
         if (!$multipleLocale) {
             $result = $this->generatePageFeeds($request);
         } else {
-            $result = $this->generateAllLocales();
+            $result = $this->generateAllLocales($request);
         }
         return response()->json(['status' => 'success', 'message' => $result]);
     }
@@ -74,13 +74,17 @@ class PageFeedsControllers extends Controller
     /**
      *
      */
-    private function generateAllLocales()
+    private function generateAllLocales(Request $request)
     {
         $configLocales = config('app.locales', []);
         $result = NULL;
+        $data = [];
+        if ( $request->has('change_pos') ) {
+            $data['change_pos'] = $request->get('change_pos');
+        }
         foreach ($configLocales as $keyLocale => $nameLocale) {
             $url = config('app.domain') . '/' . $keyLocale . '/pagefeeds-generator-multiple';
-            $request = $this->curlRequest($url);
+            $request = $this->curlRequest($url, $data);
             $response = json_decode($request);
         }
     }
@@ -93,9 +97,16 @@ class PageFeedsControllers extends Controller
      */
     private function getFeedData($columns, Request $request)
     {
+        $rawStringQuery = 'slug, status, ';
         try {
             $query = $this->buildFilter($request);
-            $tableItems = $query->select(\DB::raw('slug, status, concat(concat(title," "),`auto_text`) as "title"'))->get();
+            if ( $request->has('change_pos') && $request->get('change_pos') == 'change') {
+                $addAlias = 'concat(`auto_text`, concat(" ", `title`)) as "title"';
+            } else {
+                $addAlias = 'concat(concat(`title`," "),`auto_text`) as "title"';
+            }
+            $rawStringQuery = $rawStringQuery . $addAlias;
+            $tableItems = $query->select(\DB::raw($rawStringQuery))->get();
             $results = [
                 [
                     'Page URL',
