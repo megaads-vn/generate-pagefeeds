@@ -43,6 +43,60 @@ class PageFeedsControllers extends Controller
         return $this->generatePageFeeds($request);
     }
 
+
+    /**
+     * @param Request $request
+     * @return 
+     */
+    public function couponFeeds(Request $request) 
+    {
+        $response = [
+            'status' => 'fail'
+        ]; 
+
+        if ( $request->has('spreadSheetId') ) {
+            $spreadSheetId  = $request->get('spreadSheetId');
+            $values = $this->getCouponFeed('coupon', $request);
+            $result = $this->googleClient->addValues($spreadSheetId, $values, 'A1:B');
+            $response['status'] = 'successful';
+            $response['result'] = $result;
+        } else {
+            $response['message'] = 'Invalid params';
+        }
+
+        return response()->json($response);
+    }
+
+    /**
+     * @param Request $request
+     * @return
+     */
+    public function dealFeeds(Request $request) 
+    {
+        $response = [
+            'status' => 'fail'
+        ]; 
+
+        if ( $request->has('spreadSheetId') ) {
+            $spreadSheetId  = $request->get('spreadSheetId');
+            $values = $this->getCouponFeed('deal', $request);
+            $result = $this->googleClient->addValues($spreadSheetId, $values, 'A1:B');
+            $response['status'] = 'successful';
+            $response['result'] = $result;
+        } else {
+            $response['message'] = 'Invalid params';
+        }
+
+        return response()->json($response);
+    }
+
+    /**
+     * ------------------------------------------
+     *              PRIVATE FUNCTION
+     * ------------------------------------------
+     */
+
+
     /**
      * @param Request $request
      * @return null
@@ -176,5 +230,43 @@ class PageFeedsControllers extends Controller
         }
         $response = curl_exec($channel);
         return $response;
+    }
+
+    /**
+     * 
+     * 
+     */
+    private function getCouponFeed($table, Request $request) 
+    {
+        $feedData = NULL;
+        $status = $request->get('status', self::STATUS_ENABLE);
+        $tableId = $table . '_id';
+        $tableSlug = $table . '_slug';
+        $tableTitle = $table . '_title';
+        $routeName = $table . 'StoreRoute';
+        try {
+            $result = \DB::table($table)
+                        ->where("$table.status", $status)
+                        ->join('store', 'store.id', '=', "$table.store_id")
+                        ->get(["$table.id as $tableId", "$table.slug as $tableSlug", "$table.title as $tableTitle", "store.slug as store_slug", "store.id as store_id"]);
+            if ( !empty($result) ) {
+                $feedData = [
+                    [
+                        'Page URL',
+                        'Custom Label'
+                    ]
+                ];
+
+                foreach($result as $item) {
+                    $dataItem = array();
+                    $dataItem[] = route($this->$routeName, ['slug' => $item->store_slug, 'itemId' => $item->$tableId]);
+                    $dataItem[] = $item->$tableTitle;
+                    array_push($feedData, $dataItem);
+                }
+            }
+            return $feedData;
+        } catch ( \Exception $exception ) {
+            throw new \Exception($exception->getMessage());
+        }
     }
 }

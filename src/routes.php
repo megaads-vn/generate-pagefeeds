@@ -15,4 +15,6 @@ Route::group(['prefix' => $locale, 'namespace' => '\Megaads\Generatepagefeeds\Co
 
 Route::group(['namespace' => '\Megaads\Generatepagefeeds\Controllers'], function() {
     Route::get('/pagefeeds-generator', 'PageFeedsControllers@generate');
+    Route::get('/coupon-feeds-generator', 'PageFeedsControllers@couponFeeds');
+    Route::get('/deal-feeds-generator', 'PageFeedsControllers@dealFeeds');
 });

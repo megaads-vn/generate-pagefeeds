@@ -59,6 +59,8 @@ is shared.
 
 ```
 http://yourdomain/pagefeeds-generator
+http://yourdomain/coupon-feeds-generator?spreadSheetId=abcxyz
+http://yourdomain/deal-feeds-generator?spreadSheetId=abcxyz
 ```
 
 Thanks
