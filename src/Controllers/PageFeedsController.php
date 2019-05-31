@@ -9,7 +9,10 @@ use Mockery\Exception;
 
 class PageFeedsControllers extends Controller
 {
+    const STATUS_ENABLE = 'active';
     protected $storeRouteName = 'frontend::store::listByStore';
+    protected $couponStoreRoute = 'frontend::store::listByStore::item';
+    protected $dealStoreRoute = 'frontend::store::deal::item';
     private $publicPath = "";
     private $googleClient;
 
