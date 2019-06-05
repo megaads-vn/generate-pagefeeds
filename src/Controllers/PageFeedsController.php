@@ -12,7 +12,7 @@ class PageFeedsControllers extends Controller
     const STATUS_ENABLE = 'active';
     protected $storeRouteName = 'frontend::store::listByStore';
     protected $couponStoreRoute = 'frontend::store::listByStore::item';
-    protected $dealStoreRoute = 'frontend::store::deal::item';
+    protected $dealStoreRoute = 'frontend::deal::detail';
     private $publicPath = "";
     private $googleClient;
 
@@ -262,7 +262,11 @@ class PageFeedsControllers extends Controller
 
                 foreach($result as $item) {
                     $dataItem = array();
-                    $dataItem[] = route($this->$routeName, ['slug' => $item->store_slug, 'itemId' => $item->$tableId]);
+                    $route = route($this->$routeName, ['slug' => $item->store_slug, 'itemId' => $item->$tableId]);
+                    if ( $table == 'deal' ) {   
+                        $route = route($this->$routeName, ['itemId' => $item->$tableId]);
+                    }
+                    $dataItem[] = $route;
                     $dataItem[] = $item->$tableTitle;
                     array_push($feedData, $dataItem);
                 }
