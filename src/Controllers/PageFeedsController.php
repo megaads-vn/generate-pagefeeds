@@ -154,16 +154,10 @@ class PageFeedsControllers extends Controller
      */
     private function getFeedData($columns, Request $request)
     {
-        $rawStringQuery = 'slug, status, ';
+        $rawStringQuery = 'slug, status, title, auto_text';
         $isChangeTitlePos = env('PAGEFEEDS_TITLE', false);
         try {
             $query = $this->buildFilter($request);
-            if ( $isChangeTitlePos ) {
-                $addAlias = 'concat(`auto_text`, concat(" ", `title`)) as "title"';
-            } else {
-                $addAlias = 'concat(concat(`title`," "),`auto_text`) as "title"';
-            }
-            $rawStringQuery = $rawStringQuery . $addAlias;
             $tableItems = $query->select(\DB::raw($rawStringQuery))->get();
             $results = [
                 [
@@ -174,9 +168,11 @@ class PageFeedsControllers extends Controller
             if ( !empty($tableItems) ) {
                 foreach($tableItems as $item) {
                     $dataItem = array();
+                    $title  = trim($item->title);
+                    $autotext = trim($item->auto_text);
                     if ( $item->status == 'enable' ) {
                         $dataItem[] = route($this->storeRouteName, ['slug' => $item->slug]);
-                        $dataItem[] = $item->title;
+                        $dataItem[] = ($isChangeTitlePos) ? $autotext . ' ' . $title : $title . ' ' . $autotext;
                         array_push($results, $dataItem);
                     }
                 }
