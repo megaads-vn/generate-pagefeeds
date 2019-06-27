@@ -63,4 +63,12 @@ http://yourdomain/coupon-feeds-generator?spreadSheetId=abcxyz
 http://yourdomain/deal-feeds-generator?spreadSheetId=abcxyz
 ```
 
+With generate pagefeeds for multiple locales. Run with URL:
+
+```
+http://yourdomain/locale/pagefeeds-generator-multiple
+```
+Example 
+http://yourdomain/fr/pagefeeds-generator-multiple
+
 Thanks
