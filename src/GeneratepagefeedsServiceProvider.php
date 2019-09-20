@@ -8,9 +8,9 @@ class GeneratepagefeedsServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        // if (!$this->app->routesAreCached()) {
+        if (!$this->app->routesAreCached()) {
             include __DIR__ . '/routes.php';
-        // }
+        }
         $this->publishConfig();
         include __DIR__.'/../vendor/autoload.php';
     }
