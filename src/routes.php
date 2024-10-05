@@ -1,6 +1,6 @@
 <?php
 if (config('generate-sitemap.multiplesitemap')) {
-    $avaiablelocales = config('app.locales');
+    $avaiablelocales = config('app.locales', []);
     $locale = Request::segment(1);
     if (!array_key_exists($locale, $avaiablelocales)) {
         $locale = '';
